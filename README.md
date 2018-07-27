@@ -6,4 +6,4 @@ I<sup>2</sup>C devices like the VL53L1X on a variety of platforms (Arduino, Rasp
 
 So far I have tested the VL53L1X library on the following platforms:
 
-* Ladybug STM32L433 development board
+* [Ladybug STM32L432](https://www.tindie.com/products/TleraCorp/ladybug-stm32l432-development-board/) development board
