@@ -41,6 +41,12 @@
 #include "VL53L1X.h"
 #include <CrossPlatformI2C.h>
 
+#if defined(ARDUINO)
+#include <Arduino.h>
+#else
+extern void delay(uint32_t msec);
+#endif
+
 //This is 135 bytes to be written every time to the VL53L1X to initiate a measurement
 //0x29 is written to memory location 0x01, which is the register for the I2C address which
 //is indeed 0x29. So this makes sense. We could evaluate the default register settings of a given
@@ -84,7 +90,7 @@ bool VL53L1X::begin(uint8_t deviceAddress)
   int counter = 0;
   while ((cpi2c_readRegister(_i2cport, VL53L1_FIRMWARE__SYSTEM_STATUS) & 0x01) == 0) {
     if (counter++ == 100) return false; //Sensor timed out
-    cpi2c_delay(10);
+    delay(10);
   }
 
   //Set I2C to 2.8V mode. In this mode 3.3V I2C is allowed.
@@ -143,7 +149,7 @@ bool VL53L1X::newDataReady()
 void VL53L1X::softReset()
 {
   cpi2c_writeRegister_16_8(_i2cport, VL53L1_SOFT_RESET, 0x00); //Reset
-  cpi2c_delay(1); //Driver uses 100us
+  delay(1); //Driver uses 100us
   cpi2c_writeRegister_16_8(_i2cport, VL53L1_SOFT_RESET, 0x01); //Exit reset
 }
 
