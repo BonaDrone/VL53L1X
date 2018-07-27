@@ -6,6 +6,8 @@
 
   Written by Nathan Seidle @ SparkFun Electronics, April 12th, 2018
 
+  Modified by Simon D. Levy to work with CrossPlatformI2C library, 26 July 2018
+
   The VL53L1X is the latest Time Of Flight (ToF) sensor to be released. It uses
   a VCSEL (vertical cavity surface emitting laser) to emit a class 1 IR laser
   and time the reflection to the target. What does all this mean? You can measure
@@ -74,7 +76,7 @@ bool VL53L1X::begin(uint8_t deviceAddress)
 
   //Check the device ID
   uint16_t modelID = cpi2c_readRegister16(_i2cport, VL53L1_IDENTIFICATION__MODEL_ID);
-  if (modelID != 0xEACC) return (false);
+  if (modelID != 0xEACC) return false;
 
   softReset();
 
@@ -82,7 +84,7 @@ bool VL53L1X::begin(uint8_t deviceAddress)
   int counter = 0;
   while (cpi2c_readRegister16(_i2cport, VL53L1_FIRMWARE__SYSTEM_STATUS) & 0x01 == 0)
   {
-    if (counter++ == 100) return (false); //Sensor timed out
+    if (counter++ == 100) return false; //Sensor timed out
     cpi2c_delay(10);
   }
 
@@ -178,7 +180,7 @@ void VL53L1X::softReset()
 //Get the 'final' results from measurement
 uint16_t VL53L1X::getDistance()
 {
-  return (cpi2c_readRegister16(_i2cport, VL53L1_RESULT__FINAL_CROSSTALK_CORRECTED_RANGE_MM_SD0));
+  return cpi2c_readRegister16(_i2cport, VL53L1_RESULT__FINAL_CROSSTALK_CORRECTED_RANGE_MM_SD0);
 }
 
 //Get signal rate
@@ -188,7 +190,7 @@ uint16_t VL53L1X::getSignalRate()
   //From vl53l1_api.c line 2041
   uint16_t reading = cpi2c_readRegister16(_i2cport, VL53L1_RESULT__PEAK_SIGNAL_COUNT_RATE_CROSSTALK_CORRECTED_MCPS_SD0);// << 9; //FIXPOINT97TOFIXPOINT1616
   //float signalRate = (float)reading/65536.0;
-  return (reading);
+  return reading;
 }
 
 
