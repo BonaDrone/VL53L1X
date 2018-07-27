@@ -82,8 +82,7 @@ bool VL53L1X::begin(uint8_t deviceAddress)
 
   //Polls the bit 0 of the FIRMWARE__SYSTEM_STATUS register to see if the firmware is ready
   int counter = 0;
-  while (cpi2c_readRegister16(_i2cport, VL53L1_FIRMWARE__SYSTEM_STATUS) & 0x01 == 0)
-  {
+  while ((cpi2c_readRegister(_i2cport, VL53L1_FIRMWARE__SYSTEM_STATUS) & 0x01) == 0) {
     if (counter++ == 100) return false; //Sensor timed out
     cpi2c_delay(10);
   }
