@@ -81,7 +81,7 @@ bool VL53L1X::begin(uint8_t deviceAddress)
   _i2cport = cpi2c_open(deviceAddress);
 
   //Check the device ID
-  uint16_t modelID = cpi2c_readRegister16(_i2cport, VL53L1_IDENTIFICATION__MODEL_ID);
+  uint16_t modelID = cpi2c_readRegister_16(_i2cport, VL53L1_IDENTIFICATION__MODEL_ID);
   if (modelID != 0xEACC) return false;
 
   softReset();
@@ -94,7 +94,7 @@ bool VL53L1X::begin(uint8_t deviceAddress)
   }
 
   //Set I2C to 2.8V mode. In this mode 3.3V I2C is allowed.
-  uint16_t result = cpi2c_readRegister16(_i2cport, VL53L1_PAD_I2C_HV__EXTSUP_CONFIG);
+  uint16_t result = cpi2c_readRegister_16(_i2cport, VL53L1_PAD_I2C_HV__EXTSUP_CONFIG);
   result = (result & 0xFE) | 0x01;
   cpi2c_writeRegister_16_16(_i2cport, VL53L1_PAD_I2C_HV__EXTSUP_CONFIG, result);
 
@@ -185,7 +185,7 @@ void VL53L1X::softReset()
 //Get the 'final' results from measurement
 uint16_t VL53L1X::getDistance()
 {
-  return cpi2c_readRegister16(_i2cport, VL53L1_RESULT__FINAL_CROSSTALK_CORRECTED_RANGE_MM_SD0);
+  return cpi2c_readRegister_16(_i2cport, VL53L1_RESULT__FINAL_CROSSTALK_CORRECTED_RANGE_MM_SD0);
 }
 
 //Get signal rate
@@ -193,7 +193,7 @@ uint16_t VL53L1X::getDistance()
 uint16_t VL53L1X::getSignalRate()
 {
   //From vl53l1_api.c line 2041
-  uint16_t reading = cpi2c_readRegister16(_i2cport, VL53L1_RESULT__PEAK_SIGNAL_COUNT_RATE_CROSSTALK_CORRECTED_MCPS_SD0);// << 9; //FIXPOINT97TOFIXPOINT1616
+  uint16_t reading = cpi2c_readRegister_16(_i2cport, VL53L1_RESULT__PEAK_SIGNAL_COUNT_RATE_CROSSTALK_CORRECTED_MCPS_SD0);// << 9; //FIXPOINT97TOFIXPOINT1616
   //float signalRate = (float)reading/65536.0;
   return reading;
 }
